@@ -28,4 +28,4 @@ after_success:
   - cd dist
   - git add .
   - git commit --message "Automatically update from travis-ci"
-  - git push --quiet --force  "https://${GH_TOKEN}@github.com/ssdoz2sk/embeddedSystemFE.git dist:dist
+  - git push --quiet --force https://${GH_TOKEN}@github.com/ssdoz2sk/embeddedSystemFE.git dist:dist
