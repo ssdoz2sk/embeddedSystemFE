@@ -1,0 +1,31 @@
+branches:
+  only:
+    - master
+
+language: node_js
+
+sudo: false
+
+node_js: stable
+
+cache:
+  directories:
+    - node_modules
+
+install:
+  - npm install
+
+before_script:
+  - git config user.name "ssdoz2sk"
+  - git config user.email "mybalance22@gmail.com"
+  - git clone --branch gh-pages https://${GH_REF} dist
+
+script:
+  - npm test
+
+after_success:
+  - npm run build
+  - cd dist
+  - git add .
+  - git commit --message "Automatically update from travis-ci"
+  - git push --quiet --force  "https://${GH_TOKEN}@${GH_REF}" dist:dist

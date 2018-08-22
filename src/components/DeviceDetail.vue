@@ -7,6 +7,7 @@
         <div>Project id: {{device.project}}</div>
         <div>Last update: {{device.updated_at | ISO8601toLocalTime}}</div>
         <div>Description: {{device.sescription}}</div>
+        <div>Device Token: {{device.access_token}}</div>
       </v-flex>
       <v-flex xs2 md2 lg2 offset-md1>
         <v-dialog v-model="dialog" persistent max-width="500px">
