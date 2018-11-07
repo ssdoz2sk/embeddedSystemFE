@@ -2,70 +2,20 @@
   <v-container fluid grid-list-md>
     <v-layout row wrap>
       <v-flex xs10 md8 lg8 offset-md1 offset-lg1>
-        <h1>物聯網裝置名稱: {{device.name}}</h1>
-        <div>物聯網裝置 id: {{device.id}}</div>
-        <div>所屬的專案 id: {{device.project}}</div>
-        <div>裝置資料最後更新時間: {{device.updated_at | ISO8601toLocalTime}}</div>
-        <div>裝置詳細內容: {{device.description}}</div>
-        <div>裝置上傳 Token: {{device.access_token}}</div>
-      </v-flex>
-      <v-flex xs2 md2 lg2 offset-md1>
-        <v-dialog v-model="dialog" persistent max-width="500px">
-          <v-card slot="activator" color="primary" block dark >
-            <v-card-text>新增感測器</v-card-text>
-          </v-card>
-          <v-card>
-            <v-card-title>
-              <span class="headline">新增感測器</span>
-            </v-card-title>
-            <v-card-text>
-              <v-container grid-list-md>
-                <v-layout wrap>
-                  <v-flex xs12>
-                    <v-text-field label="感測器名稱" v-model="newSensorName" required></v-text-field>
-                  </v-flex>
-                  <v-flex xs12>
-                    <v-text-field label="感測器顯示名稱" v-model="newSensorShowName" required></v-text-field>
-                  </v-flex>
-                  <v-flex xs12>
-                    <v-select :items="dataTypes" v-model="newSensorType" label="感測器顯示型別"></v-select>
-                  </v-flex>
-                </v-layout>
-              </v-container>
-            </v-card-text>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" flat @click.native="dialog = false">關閉</v-btn>
-              <v-btn color="blue darken-1" flat @click.native="createSensor">儲存</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
+        <h1>感測器名稱: {{sensor.name}}</h1>
+        <div>感測器顯示名稱: {{sensor.showname}}</div>
+        <div>最後更新時間: {{device.updated_at | ISO8601toLocalTime}}</div>
       </v-flex>
     </v-layout>
-
     <v-layout row wrap>
-      <v-flex xs12 md10 offset-md1>
-        <v-data-table 
-          :headers='headers'
-          :items='sensors'
-          hide-actions
-          class='elevation-1'
-        >
-          <template slot="items" slot-scope="props">
-            <tr>
-              <td>{{ props.item.showname }} ({{ props.item.name }})</td>
-              <td>{{ props.item.last_value }}</td>
-              <td>{{ props.item.last_upload | ISO8601toLocalTime }}</td>
-            </tr>
-          </template>
-        </v-data-table>
-      </v-flex>
-    </v-layout>
-
-    <v-layout row wrap>
-      <v-flex xs12 md5 offset-md1 v-for="sensor in sensors" :key="sensor.name">
-        <highcharts class="stock" :options="sensor.chartOptions" :updateArgs="sensor.updateArgs"></highcharts>
-      </v-flex>
+      <v-card>
+        <v-list dense>
+          <v-list-tile>
+            <v-list-tile-content>Calories:</v-list-tile-content>
+            <v-list-tile-content class="align-end">{{ props.item.calories }}</v-list-tile-content>
+          </v-list-tile>
+        </v-list>
+      </v-card>
     </v-layout>
   </v-container>
 </template>
@@ -80,8 +30,6 @@ export default {
       dialog: false,
       newSensorName: '',
       newSensorShowName: '',
-      newSensorType: '',
-      dataTypes: ['int', 'double', 'bool', 'string'],
       headers: [
         {
           text: 'Name',
@@ -181,7 +129,7 @@ export default {
       })
     },
     createSensor: function () {
-      this.$http.createSensor(this.newSensorName, this.newSensorShowName, this.newSensorType, this.deviceId).then(({data}) => {
+      this.$http.createSensor(this.newSensorName, this.newSensorShowName, this.deviceId).then(({data}) => {
         this.clearAllInterval()
         this.getSensorList(this.deviceId)
         this.dialog = false
@@ -215,9 +163,6 @@ export default {
           clearInterval(sensor.intervalId)
         }
       }
-    },
-    enterSensorDetail (id) {
-      this.$router.push({name: 'sensorDetail', params: {id: id}})
     }
   },
   mounted: function () {

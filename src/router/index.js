@@ -1,10 +1,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
 import Login from '@/components/Login'
 import Project from '@/components/Project'
 import ProjectDetail from '@/components/ProjectDetail'
 import DeviceDetail from '@/components/DeviceDetail'
+import SensorDetail from '@/components/SensorDetail'
 
 Vue.use(Router)
 
@@ -12,8 +12,7 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: HelloWorld
+      redirect: '/project'
     },
     {
       path: '/login',
@@ -34,6 +33,11 @@ export default new Router({
       path: '/device/:id',
       name: 'deviceDetail',
       component: DeviceDetail
+    },
+    {
+      path: '/sensor/:id',
+      name: 'sensorDetail',
+      component: SensorDetail
     }
   ]
 })

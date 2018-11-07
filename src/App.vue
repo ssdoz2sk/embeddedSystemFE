@@ -50,11 +50,6 @@ export default {
     return {
       drawer: false,
       items: [{
-        icon: 'bubble_chart',
-        title: 'Inspire',
-        to: '/'
-      },
-      {
         icon: 'book',
         title: 'Project',
         to: '/project'

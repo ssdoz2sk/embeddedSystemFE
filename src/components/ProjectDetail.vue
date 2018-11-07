@@ -2,10 +2,10 @@
   <v-container fluid grid-list-md>
     <v-layout row wrap>
       <v-flex xs10 md8 lg8 offset-md1 offset-lg1>
-        <h1>Project: {{project.name}}</h1>
-        <div>Project id: {{project.id}}</div>
-        <div>Last update: {{project.updated_at | ISO8601toLocalTime}}</div>
-        <div>Description: {{project.sescription}}</div>
+        <h1>物聯網專案名稱: {{project.name}}</h1>
+        <div>物聯網專案 id: {{project.id}}</div>
+        <div>專案最後更新時間: {{project.updated_at | ISO8601toLocalTime}}</div>
+        <div>專案描述: {{project.description}}</div>
       </v-flex>
       <v-flex xs2 md2 lg1 offset-md1>
         <v-dialog v-model="dialog" persistent max-width="500px">
@@ -20,15 +20,16 @@
               <v-container grid-list-md>
                 <v-layout wrap>
                   <v-flex xs12>
-                    <v-text-field label="Device name" v-model="newDeviceName" required></v-text-field>
+                    <v-text-field label="裝置名稱" v-model="newDeviceName" required></v-text-field>
+                    <v-textarea label="裝置描述" v-model="newProjectDetail" required></v-textarea>
                   </v-flex>
                 </v-layout>
               </v-container>
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" flat @click.native="dialog = false">Close</v-btn>
-              <v-btn color="blue darken-1" flat @click.native="createDevice">Save</v-btn>
+              <v-btn color="blue darken-1" flat @click.native="dialog = false">關閉</v-btn>
+              <v-btn color="blue darken-1" flat @click.native="createDevice">儲存</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -44,14 +45,15 @@
         >
           <template slot="items" slot-scope="props">
             <tr>
-              <td><a @click.self="enterDeviceDetail(props.item.id)">{{ props.item.name }}</a></td>            </tr>
+              <td><a @click.self="enterDeviceDetail(props.item.id)">{{ props.item.name }}</a></td>
+            </tr>
           </template>
         </v-data-table>
       </v-flex>
     </v-layout>
 
     <v-layout row wrap>
-      <v-flex xs12 md5 offset-md1 v-for="sensor in sensors" :key="sensor.name">
+      <v-flex xs12 md5 offset-md1 v-for="sensor in sensors" v-if="sensor.data_type in ['int', 'double']" :key="sensor.name">
         <highcharts class="chart" :options="sensor.chartOptions" :updateArgs="sensor.updateArgs"></highcharts>
       </v-flex>
     </v-layout>
@@ -136,9 +138,9 @@ export default {
     },
     createDevice: function () {
       this.$http.createDevice(this.newDeviceName, this.projectId).then(({data}) => {
-        this.getDeviceList()
+        this.getDeviceList(this.projectId)
+        this.dialog = false
       }).catch(error => {
-        console.log(error)
         this.$store.dispatch('SET_ALERT', {type: 'error', message: error.response.data.message || error.response.data.detail})
       })
     },

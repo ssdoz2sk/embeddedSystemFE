@@ -40,8 +40,8 @@ http.install = function (Vue, options) {
     getSensorsByDevice: function (deviceId) {
       return axios.get('/api/sensors', {params: {device: deviceId}})
     },
-    createSensor: function (sensorsName, sensorsShowName, deviceId) {
-      return axios.post('/api/sensors', {name: sensorsName, showname: sensorsShowName, device: deviceId})
+    createSensor: function (sensorName, sensorShowName, sensorType, deviceId) {
+      return axios.post('/api/sensors', {name: sensorName, showname: sensorShowName, 'data_type': sensorType, device: deviceId})
     },
     getSensorDetail: function (sensorId) {
       return axios.get(`/api/sensor/${sensorId}`)

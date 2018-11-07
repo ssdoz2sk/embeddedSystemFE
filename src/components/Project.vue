@@ -15,15 +15,16 @@
                 <v-container grid-list-md>
                   <v-layout wrap>
                     <v-flex xs12>
-                      <v-text-field label="Project name" v-model="newProjectName" required></v-text-field>
+                      <v-text-field label="物聯網專案名稱" v-model="newProjectName" autofocus=true required></v-text-field>
+                      <v-textarea label="專案描述" v-model="newProjectDetail" required></v-textarea>
                     </v-flex>
                   </v-layout>
                 </v-container>
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" flat @click.native="dialog = false">Close</v-btn>
-                <v-btn color="blue darken-1" flat @click.native="createProject">Save</v-btn>
+                <v-btn color="blue darken-1" flat @click.native="dialog = false">關閉</v-btn>
+                <v-btn color="blue darken-1" flat @click.native="createProject">儲存</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -39,6 +40,7 @@
               <tr>
                 <td><a @click.self="enterProjectDetail(props.item.id)">{{ props.item.name }}</a></td>
                 <td>{{ props.item.creater }}</td>
+                <td>{{ props.item.created_at | ISO8601toLocalTime }}</td>
               </tr>
             </template>
           </v-data-table>
@@ -54,16 +56,22 @@ export default {
     return {
       dialog: false,
       newProjectName: '',
+      newProjectDetail: '',
       headers: [
         {
-          text: 'Name',
+          text: '專案名稱',
           sortable: true,
           value: 'name'
         },
         {
-          text: 'Owner',
+          text: '創立者',
           sortable: true,
           value: 'creater'
+        },
+        {
+          text: '建立時間',
+          sortable: true,
+          value: 'created_at'
         }
       ],
       projects: []
@@ -79,7 +87,7 @@ export default {
     },
     createProject () {
       this.dialog = true
-      this.$http.createProject(this.newProjectName).then(({data}) => {
+      this.$http.createProject(this.newProjectName, this.newProjectDetail).then(({data}) => {
         this.getProjects()
         this.dialog = false
       })
@@ -92,6 +100,12 @@ export default {
     if (this.$store.state.User.jwt_token) {
       this.$http.setToken(this.$store.state.User.jwt_token)
       this.getProjects()
+    }
+  },
+  filters: {
+    ISO8601toLocalTime: function (value) {
+      let time = new Date(value)
+      return time.toLocaleString()
     }
   },
   name: 'Project'
