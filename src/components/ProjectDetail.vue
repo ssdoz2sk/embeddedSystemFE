@@ -148,20 +148,28 @@ export default {
       this.$router.push({name: 'deviceDetail', params: {id: id}})
     },
     getSensorData: function (sensorId) {
+      let sensor = null
+      for (let s of this.sensors) {
+        if (s.id === sensorId) {
+          sensor = s
+          break
+        }
+      }
       this.$http.getDataBySensorId(sensorId).then((data) => {
         let timedata = []
         let testdata = []
-        for (let d of data.data) {
-          let time = new Date(d['timestamp']* 1000)
+        for (let d of data) {
+          let time = new Date(d['timestamp'] * 1000)
           let value = d['data']
+          if (value === null) {
+            continue
+          }
           timedata.push([time.getTime(), value])
           testdata.push(value)
           sensor.last_value = value
           sensor.last_upload = time
         }
         sensor.chartOptions.series[0].data = timedata
-
-        return
       }).catch((err) => console.log(err))
     },
     clearAllInterval: function () {
