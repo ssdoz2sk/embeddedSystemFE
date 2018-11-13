@@ -102,6 +102,19 @@ export default {
       this.getProjects()
     }
   },
+  computed: {
+    getUserAleradyLogin () {
+      return this.$store.state.User.alreadyLogin
+    }
+  },
+  watch: {
+    getUserAleradyLogin (val) {
+      if (this.$store.state.User.jwt_token) {
+        this.$http.setToken(this.$store.state.User.jwt_token)
+        this.getProjects()
+      }
+    }
+  },
   filters: {
     ISO8601toLocalTime: function (value) {
       let time = new Date(value)

@@ -55,7 +55,7 @@ export default {
         to: '/project'
       }],
       miniVariant: false,
-      title: '雲端物聯網分析平台'
+      title: '雲端物聯網資訊平台'
     }
   },
   mounted: function () {

@@ -198,6 +198,7 @@ export default {
       this.$http.getDataBySensorId(sensorId).then((data) => {
         let timedata = []
         let testdata = []
+        let firstData = true
         for (let d of data.data) {
           let time = new Date(d['timestamp'] * 1000)
           let value = d['data']
@@ -206,8 +207,11 @@ export default {
           }
           timedata.push([time.getTime(), value])
           testdata.push(value)
-          sensor.last_value = value
-          sensor.last_upload = time
+          if (firstData && value !== null) {
+            sensor.last_value = value
+            sensor.last_upload = time
+            firstData = false
+          }
         }
         sensor.chartOptions.series[0].data = timedata
       }).catch((err) => console.log(err))
